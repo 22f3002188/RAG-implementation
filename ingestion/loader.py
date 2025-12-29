@@ -1,50 +1,62 @@
 import os
-from langchain_core.documents import Document
-from docx import Document as DocxDocument
-from PIL import Image
+import pdfplumber
 import pytesseract
+from PIL import Image
+import docx
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
-
-def load_txt(path):
-    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-        return Document(page_content=f.read(), metadata={"source": path})
+from ingestion.normalizer import normalize_ocr_layout
 
 
-def load_docx(path):
-    doc = DocxDocument(path)
-    text = "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
-    if text.strip():
-        return Document(page_content=text, metadata={"source": path})
-    return None
-
-
-def load_image(path):
-    text = pytesseract.image_to_string(Image.open(path))
-    if text.strip():
-        return Document(page_content=text, metadata={"source": path})
-    return None
-
-
-def load_files(directory):
+def load_files(folder):
     documents = []
 
-    for file in os.listdir(directory):
-        path = os.path.join(directory, file)
+    for file in os.listdir(folder):
+        path = os.path.join(folder, file)
+        content = ""
 
-        if file.endswith(".txt"):
-            documents.append(load_txt(path))
+        # -----------------------------
+        # PDF
+        # -----------------------------
+        if file.lower().endswith(".pdf"):
+            with pdfplumber.open(path) as pdf:
+                for page in pdf.pages:
+                    content += page.extract_text() or ""
 
-        elif file.endswith(".docx"):
-            doc = load_docx(path)
-            if doc:
-                documents.append(doc)
+        # -----------------------------
+        # DOCX
+        # -----------------------------
+        elif file.lower().endswith(".docx"):
+            doc = docx.Document(path)
+            for p in doc.paragraphs:
+                content += p.text + "\n"
 
+        # -----------------------------
+        # IMAGE (LAYOUT-AWARE OCR)
+        # -----------------------------
         elif file.lower().endswith((".png", ".jpg", ".jpeg")):
-            doc = load_image(path)
-            if doc:
-                documents.append(doc)
+            image = Image.open(path)
 
-    # remove None entries
-    return [d for d in documents if d]
+            ocr_data = pytesseract.image_to_data(
+                image,
+                output_type=pytesseract.Output.DICT
+            )
+
+            content = normalize_ocr_layout(ocr_data)
+
+        # -----------------------------
+        # TEXT / MARKDOWN
+        # -----------------------------
+        elif file.lower().endswith((".txt", ".md")):
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+        # -----------------------------
+        # SAVE IF NOT EMPTY
+        # -----------------------------
+        if content.strip():
+            documents.append({
+                "source": file,
+                "content": content
+            })
+
+    return documents
