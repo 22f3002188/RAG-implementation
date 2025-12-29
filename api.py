@@ -20,23 +20,23 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 app = FastAPI()
 
 
-# ==============================
+
 # UI SERVE
-# ==============================
+
 @app.get("/", response_class=HTMLResponse)
 def serve_ui():
     with open("ui/index.html", "r", encoding="utf-8") as f:
         return f.read()
 
 
-# ==============================
+
 # MAIN GENERATION ENDPOINT
-# ==============================
+
 @app.post("/ui-generate")
 def ui_generate(
     files: List[UploadFile] = File(...),
     query: str = Form(...),
-    debug: Optional[bool] = Form(False)   # ✅ NEW
+    debug: Optional[bool] = Form(False)   
 ):
     start = time.time()
 
@@ -90,9 +90,8 @@ def ui_generate(
         query=query
     )
 
-    # ==============================
     # BASIC EVALUATION (SAFE)
-    # ==============================
+  
     eval_status = "not_run"
 
     if debug:

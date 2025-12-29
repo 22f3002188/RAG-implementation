@@ -4,9 +4,9 @@ from typing import Dict, Any
 from utils.llm import get_llm
 
 
-# ==============================
-# SYSTEM PROMPT (NO HARDCODING)
-# ==============================
+
+# SYSTEM PROMPT ==============================
+
 SYSTEM_PROMPT = """
 You are a professional QA Engineer generating test cases.
 
@@ -29,9 +29,9 @@ MANDATORY RULES:
 
 
 
-# ==============================
-# OUTPUT SCHEMA
-# ==============================
+
+# OUTPUT SCHEMA ==============================
+
 OUTPUT_SCHEMA = """
 Return JSON strictly in the following format:
 
@@ -55,17 +55,17 @@ Return JSON strictly in the following format:
 """
 
 
-# ==============================
-# JSON SAFE PARSER
-# ==============================
+
+# JSON SAFE PARSER ==============================
+
 def extract_json(text: str) -> Dict[str, Any]:
     cleaned = re.sub(r"```json|```", "", text).strip()
     return json.loads(cleaned)
 
 
-# ==============================
-# MAIN GENERATION FUNCTION
-# ==============================
+
+# MAIN GENERATION FUNCTION ==============================
+
 def generate_test_cases(
     context: str,
     query: str
@@ -95,10 +95,7 @@ INSTRUCTIONS:
     )
 
     parsed = extract_json(response.content)
-
-    # ==============================
-    # FINAL SAFETY CHECK (NO GUESSING)
-    # ==============================
+   
     if parsed.get("status") == "success" and parsed.get("use_cases"):
         return parsed
 
