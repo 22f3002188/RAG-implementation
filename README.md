@@ -118,8 +118,11 @@ pip install -r requirements.txt
 Create a .env file (example below):
 
 AZURE_OPENAI_ENDPOINT=your_endpoint
+
 AZURE_OPENAI_API_KEY=your_api_key
+
 AZURE_OPENAI_DEPLOYMENT=your_deployment_name
+
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
 
                  OR
