@@ -139,7 +139,7 @@ pip install -r requirements.txt
 
 3️⃣ Environment Variables
 
-Create a .env file (example below):
+UPLOAD YOUR CREDENTIALS IN .env.example file
 
 AZURE_OPENAI_ENDPOINT=your_endpoint
 
