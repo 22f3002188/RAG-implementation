@@ -83,27 +83,51 @@ LLM Generation (JSON Only)
 Evaluation & Validation
 
 📁 Project Structure
+
 RAG-implementation/
-├── api.py                  # FastAPI orchestration layer
+
+├── api.py       
+# FastAPI orchestration layer
+
 ├── requirements.txt
+
 ├── README.md
+
 ├── ingestion/
-│   ├── loader.py           # Multimodal file loading + OCR
-│   ├── normalizer.py       # OCR layout cleanup
-│   └── chunker.py          # Chunking & deduplication
+│   ├── loader.py  
+# Multimodal file loading + OCR
+
+│   ├── normalizer.py  
+# OCR layout cleanup
+
+│   └── chunker.py    
+# Chunking & deduplication
+
 ├── retrieval/
-│   ├── vector_store.py     # FAISS vector index
-│   └── retriever.py        # Hybrid retrieval logic
+│   ├── vector_store.py  
+# FAISS vector index
+│   └── retriever.py    
+# Hybrid retrieval logic
+
 ├── generation/
-│   └── generator.py        # Guarded LLM generation
+│   └── generator.py    
+# Guarded LLM generation
+
 ├── guards/
-│   └── evidence.py         # Evidence threshold enforcement
+│   └── evidence.py      
+# Evidence threshold enforcement
+
 ├── evaluation/
-│   └── basic_eval.py       # Output validation hooks
+│   └── basic_eval.py  
+# Output validation hooks
+
 ├── utils/
-│   └── llm.py              # Centralized LLM configuration
+│   └── llm.py         
+# Centralized LLM configuration
+
 └── ui/
-    └── index.html          # Lightweight web UI
+    └── index.html    
+# Lightweight web UI
 
 🚀 Getting Started
 1️⃣ Clone the Repository
